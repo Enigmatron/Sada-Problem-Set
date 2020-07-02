@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.json.simple.JSONArray; 
+import org.json.simple.JSONObject; 
 
 public class Main {
     public static class entryCSV{
@@ -23,8 +24,11 @@ public class Main {
         System.out.println(dataset.length); //ANSWER 1
         dataset = removeInvalidProfits(dataset).stream().toArray(String[][]::new);;
         System.out.println(dataset.length);
+
     }
 
+
+    //answer 2: loops thru the dataset and only adds the rows back if the matcher finds an entry that is some floating number
     public static List<String[]> removeInvalidProfits(String[][] dataset){
         String pattern = "^-?\\d*\\.{0,1}\\d+$";
         List<String[]> ret = new ArrayList<String[]>();
@@ -37,7 +41,7 @@ public class Main {
             }
         }
 
-        return (String[][])ret.toArray();
+        return ret;
     }
 
     public static List<String[]> readCSV(String path) {
@@ -52,6 +56,7 @@ public class Main {
                     
                     data = row.split(",");
                     
+                    //removes the top row
                     if(data[0] != "Year"){
                     dataset.add(data);
                     }
