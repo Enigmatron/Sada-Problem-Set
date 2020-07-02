@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,15 +18,53 @@ public class Main {
 
 
     public static void main(String[] args) {
+
         String[][] dataset = readCSV("data.csv").stream().toArray(String[][]::new);
         System.out.println(dataset.length); //ANSWER 1
+
+
         dataset = removeInvalidProfits(dataset).stream().toArray(String[][]::new);;
-        System.out.println(dataset.length);
+        System.out.println(dataset.length);//ANSWER 2
+
+
+        writeToJSON(dataset);
         dataset = printTop20(dataset).stream().toArray(String[][]::new);
-        Arrays.stream(dataset).forEach(row -> System.out.println(   row[0]+ ", " +row[1]+ ", " +row[2]+ ", " +row[3]+ ", " +row[4]    ));
+        Arrays.stream(dataset).forEach(row -> System.out.println(   row[0]+ ", " +row[1]+ ", " +row[2]+ ", " +row[3]+ ", " +row[4]    ));//ANSWER 3
+
+
 
     }
 
+
+    public static void writeToJSON(String[][] dataset){
+        FileWriter file = null;
+        try {
+            file = new FileWriter("data2.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for(String[] i :dataset) {
+            JSONObject json = new JSONObject();
+            json.put("year", i[0]);
+            json.put("rank", i[1]);
+            json.put("company", i[2]);
+            json.put("revenue", i[3]);
+            json.put("profit", i[4]);
+            try {
+                //FileWriter file = new FileWriter("data2.json");
+                file.write(json.toJSONString());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        try {
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static List<String[]> printTop20 (String[][] dataset){
         //List<String[]> ret = new ArrayList<String[]>();
