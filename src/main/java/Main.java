@@ -84,28 +84,30 @@ public class Main {
     public static void main(String[] args) {
         entryJSON[] jsonDataset = {};
 
-
+        System.out.println("ANSWER 1:");
         String[][] dataset = readCSV("data.csv").stream().toArray(String[][]::new);
         System.out.println(dataset.length); //ANSWER 1
 
-
-        dataset = removeInvalidProfits(dataset).stream().toArray(String[][]::new);;
+        System.out.println("ANSWER 2:");
+        dataset = removeInvalidProfits(dataset).stream().toArray(String[][]::new);
         System.out.println(dataset.length);//ANSWER 2
 
 
         writeToJSON(dataset);
         dataset = printTop20(dataset).stream().toArray(String[][]::new);
+        System.out.println("ANSWER 3:");
         Arrays.stream(dataset).forEach(row -> System.out.println(   row[0]+ ", " +row[1]+ ", " +row[2]+ ", " +row[3]+ ", " +row[4]    ));//ANSWER 3
 
 
         jsonDataset = readFromJSON("data2.json").stream().toArray(entryJSON[]::new);
 
-        System.out.println("\n\n" + entryJSON.uniqueCount() + " unique companies"); //ANSWER 4
+        System.out.println("ANSWER 4:\n" + entryJSON.uniqueCount() + " unique companies"); //ANSWER 4
 
         HashMap<String, Integer> top10 = entryJSON.top10Repeats();
+        System.out.println("ANSWER 5:");
         top10.keySet().forEach(key -> System.out.println((String)key + " has "  +  top10.get(key) + " entries") ); //ANSWER 5
 
-        System.out.println(entryJSON.onlyOneReportCompany() + " companies with one record"); //ANSWER 6
+        System.out.println("ANSWER 6:\n "+entryJSON.onlyOneReportCompany() + " companies with one record"); //ANSWER 6
     }
 
     public static List<entryJSON> readFromJSON(String path) {
