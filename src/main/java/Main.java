@@ -1,18 +1,62 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.simple.JSONArray; 
-import org.json.simple.JSONObject; 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class Main {
     public static class entryJSON{
         public int year;
         public int rank;
         public String company;
+        public int revenue;
         public int profit;
+
+        private static Dictionary<String, Integer> CompanyEntryCount;
+
+
+        //ANSWER 5
+        public static String[] top10Repeats(){
+            String[] ret = new String[10];
+
+
+
+            return ret;
+        }
+
+        //ANSWER 4
+        public static int uniqueCount(){
+            return CompanyEntryCount.size();
+        }
+
+        //ANSWER 6
+        public static int onlyOneReportCompany(){
+            int ret = 0;
+
+            return ret;
+        }
+
+
+
+        public entryJSON (int y, int ra, String co, int re, int pr){
+            year = y;
+            rank = ra;
+            company = co;
+            revenue = re;
+            profit = pr;
+            if(CompanyEntryCount.get(company) != null ){
+                CompanyEntryCount.put(company, CompanyEntryCount.get(company)+1);
+            }
+            else{
+                CompanyEntryCount.put(company, 1);
+            }
+        }
+
 
     }
 
@@ -36,6 +80,30 @@ public class Main {
     }
 
     public static entryJSON[][] writeToJSON(String path) {
+        JSONParser parser = new JSONParser();
+        List<entryJSON[]> dataset = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            JSONObject json = (JSONObject) parser.parse(reader);
+
+            while ( parser.hasNext()) {
+
+                data = row.split(",");
+
+                //removes the top row
+                if(data[0] != "Year"){
+                    dataset.add(data);
+                }
+                // do something with the data
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+
     }
 
 
@@ -57,6 +125,7 @@ public class Main {
             try {
                 //FileWriter file = new FileWriter("data2.json");
                 file.write(json.toJSONString());
+                file.write("\n");
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
