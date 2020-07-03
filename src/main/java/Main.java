@@ -96,12 +96,16 @@ public class Main {
         //ANSWER 5
         HashMap<String, Integer> top10 = entryJSON.top10Repeats();
         System.out.println("ANSWER 5:");
-        top10.keySet().forEach(key -> System.out.println((String)key + " has "  +  top10.get(key) + " entries") ); //ANSWER 5
+        top10.keySet().forEach(key -> System.out.println(key + " has "  +  top10.get(key) + " entries") ); //ANSWER 5
 
         //ANSWER 6
         System.out.println("ANSWER 6:\n "+entryJSON.onlyOneReportCompany() + " companies with one record"); //ANSWER 6
     }
 
+
+    //all json values are strings(it was my first iteration idea) so i just needed to parse the values to added it to the object constructor
+    //the parser takes a string and converts it to a dictionary, therefore i just converted those strings to their respective values.
+    //revenue had some string entries so i kept it a string because it wasn't asked to trim non-numeric revenue
     public static List<entryJSON> readFromJSON(String path) {
         JSONParser parser = new JSONParser();
         List<entryJSON> dataset = new ArrayList<>();
@@ -120,14 +124,12 @@ public class Main {
                         Float.parseFloat((String)json.get("profit"))  ));
             }
         }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        catch(Exception e){ e.printStackTrace(); }
 
         return dataset;
     }
 
-
+    // takes teh strings of the dataset and converts them to json objects to write onto file via the json parser
     public static void writeToJSON(String[][] dataset){
         FileWriter file = null;
         try {
@@ -150,6 +152,8 @@ public class Main {
 
 
 
+    //the algorithm loops thru the dataset, and then from that loop it implements a pseudo-in-place sorting algorithm.
+    // the algorithm populates the psuedo-queue till 20 entries. then it compares the profits between the entries in the queue vs the dataset.
     public static List<String[]> printTop20 (String[][] dataset){
         List<String[]> queue = new ArrayList<String[]>();
         boolean added = false;
@@ -169,7 +173,7 @@ public class Main {
         return queue;
     }
 
-    //answer 2: loops thru the dataset and only adds the rows back if the matcher finds an entry that is some floating number
+    //answer 2: loops thru the dataset and only adds the rows back if the matcher finds an entry that is some floating number string
     public static List<String[]> removeInvalidProfits(String[][] dataset){
         String pattern = "^-?\\d*\\.{0,1}\\d+$";
         List<String[]> ret = new ArrayList<String[]>();
@@ -183,6 +187,8 @@ public class Main {
         return ret;
     }
 
+
+    //uses a buffered reader to read line by line of the data.csv file, it excludes the first entry by eliminating the "year" value of the first entry
     public static List<String[]> readCSV(String path) {
         BufferedReader csvReader;
         String[] data = {};
@@ -198,7 +204,6 @@ public class Main {
                     }
                 }
                 csvReader.close();
-
             } catch (IOException e1) { e1.printStackTrace(); }
         return dataset;
     }
