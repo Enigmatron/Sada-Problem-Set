@@ -1,32 +1,51 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.simple.JSONArray; 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import javax.swing.*;
+
 public class Main {
-    public static class entryJSON{
+    public static class entryJSON {
         public int year;
         public int rank;
         public String company;
-        public int revenue;
-        public int profit;
+        public String revenue;
+        public float profit;
+        private static int oneRecord = 0;
 
-        private static Dictionary<String, Integer> CompanyEntryCount;
 
+        private static HashMap<String, Integer> CompanyEntryCount = new HashMap<String, Integer>();
 
         //ANSWER 5
-        public static String[] top10Repeats(){
-            String[] ret = new String[10];
+        public static HashMap<String, Integer> top10Repeats(){
+            HashMap<String, Integer> top10 = new HashMap<String, Integer>();
+            boolean added = false;
+
+            for (Object key : CompanyEntryCount.keySet()){
+                if(top10.size() > 9){
+                    for (Object j : top10.keySet()){
+                        int contrast = top10.get(j);
+
+                        if(CompanyEntryCount.get(key) > contrast && !added){
+                            added = true;
+                            top10.remove (key);
+                            top10.put((String)j, CompanyEntryCount.get(key));
+                        }
+                    }
+                    added = false;
+                }
+                else{
+                    top10.put((String)key, CompanyEntryCount.get(key) );
+                }
+            }
 
 
 
-            return ret;
+            return top10;
         }
 
         //ANSWER 4
@@ -34,38 +53,37 @@ public class Main {
             return CompanyEntryCount.size();
         }
 
+
         //ANSWER 6
         public static int onlyOneReportCompany(){
-            int ret = 0;
-            while(CompanyEntryCount.elements().hasMoreElements()){
-                if(CompanyEntryCount.elements().nextElement() == 1){
-                    ret++;
+            CompanyEntryCount.keySet().forEach(key ->  ifEQOne(key));
+
+            return oneRecord;
+        }
+
+        public static void ifEQOne(Object key){
+                if(CompanyEntryCount.get(key) == 1){
+                    oneRecord+=1;
                 }
-            }
-            return ret;
         }
 
 
 
-        public entryJSON (int y, int ra, String co, int re, int pr){
+        public entryJSON (int y, int ra, String co, String re, float pr){
             year = y;
             rank = ra;
             company = co;
             revenue = re;
             profit = pr;
-            if(CompanyEntryCount.get(company) != null ){
-                CompanyEntryCount.put(company, CompanyEntryCount.get(company)+1);
-            }
-            else{
-                CompanyEntryCount.put(company, 1);
-            }
+            CompanyEntryCount.merge(company, 1, Integer::sum);
         }
-
 
     }
 
 
     public static void main(String[] args) {
+        entryJSON[] jsonDataset = {};
+
 
         String[][] dataset = readCSV("data.csv").stream().toArray(String[][]::new);
         System.out.println(dataset.length); //ANSWER 1
@@ -80,26 +98,33 @@ public class Main {
         Arrays.stream(dataset).forEach(row -> System.out.println(   row[0]+ ", " +row[1]+ ", " +row[2]+ ", " +row[3]+ ", " +row[4]    ));//ANSWER 3
 
 
+        jsonDataset = readFromJSON("data2.json").stream().toArray(entryJSON[]::new);
 
+        System.out.println("\n\n" + entryJSON.uniqueCount() + " unique companies"); //ANSWER 4
+
+        HashMap<String, Integer> top10 = entryJSON.top10Repeats();
+        top10.keySet().forEach(key -> System.out.println((String)key + " has "  +  top10.get(key) + " entries") ); //ANSWER 5
+
+        System.out.println(entryJSON.onlyOneReportCompany() + " companies with one record"); //ANSWER 6
     }
 
-    public static entryJSON[][] writeToJSON(String path) {
+    public static List<entryJSON> readFromJSON(String path) {
         JSONParser parser = new JSONParser();
-        List<entryJSON[]> dataset = new ArrayList<>();
+        List<entryJSON> dataset = new ArrayList<>();
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
-            JSONObject json = (JSONObject) parser.parse(reader);
+            JSONObject json;
+            String row = "";
+            while ( (row = reader.readLine()) != null) {
 
-            while ( parser.hasNext()) {
+                json = (JSONObject) parser.parse(row);
+                dataset.add(new entryJSON( Integer.parseInt((String)json.get("year")),
+                        Integer.parseInt((String)json.get("rank")), (String)json.get("company"),
+                        (String)json.get("revenue"),
+                        Float.parseFloat((String)json.get("profit"))  ));
 
-                data = row.split(",");
 
-                //removes the top row
-                if(data[0] != "Year"){
-                    dataset.add(data);
-                }
-                // do something with the data
             }
         }
         catch(Exception e){
@@ -107,7 +132,7 @@ public class Main {
         }
 
 
-
+        return dataset;
     }
 
 
@@ -197,11 +222,9 @@ public class Main {
                     
                     data = row.split(",");
                     
-                    //removes the top row
                     if(data[0] != "Year"){
                     dataset.add(data);
                     }
-                    // do something with the data
                 }
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
