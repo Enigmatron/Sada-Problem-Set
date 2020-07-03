@@ -8,7 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject; 
 
 public class Main {
-    public static class entryCSV{
+    public static class entryJSON{
         public int year;
         public int rank;
         public String company;
@@ -33,6 +33,9 @@ public class Main {
 
 
 
+    }
+
+    public static entryJSON[][] writeToJSON(String path) {
     }
 
 
