@@ -37,7 +37,11 @@ public class Main {
         //ANSWER 6
         public static int onlyOneReportCompany(){
             int ret = 0;
-
+            while(CompanyEntryCount.elements().hasMoreElements()){
+                if(CompanyEntryCount.elements().nextElement() == 1){
+                    ret++;
+                }
+            }
             return ret;
         }
 
